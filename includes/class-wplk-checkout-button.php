@@ -38,7 +38,7 @@ class WPLKCheckoutButton {
   
       } // else
   
-        return __( 'Place Order', 'woocommerce' ); // default button text to use on all other product
+        return esc_html__( 'Place Order', 'woocommerce' ); // default button text to use on all other product
       
       }
 

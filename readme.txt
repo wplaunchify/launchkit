@@ -4,7 +4,7 @@ Contributors: 1WD LLC
 Tags: woocommerce, sales funnels, checkout, launchflows, wplaunchkit
 Requires at least: 5.0
 Tested up to: 6.0
-Stable Tag: 4.3.5
+Stable Tag: 1.0.0
 Requires PHP: 7.3
 WC requires at least: 6.0
 WC tested up to: 6.6
@@ -51,7 +51,7 @@ Ready To Use WooCommerce Site Solutions For Online Business
 
 * Name Your Price By Adding &donation=xxxx to any url (where xxxx is donation amount)
 * Empty WooCommerce Cart By Adding ?emptycart=yes to any url
-* Remove Any Product From Cart By Adding ?remove-from-cart=xxxx to any url (where xxxx is product id)
+* Remove Any Product From Cart By Adding ?remove-product=xxxx to any url (where xxxx is product id)
 * Add WooCommerce Coupon Code By Adding ?wplkcoupon=xxxx to any url (where xxxx is coupon code)
 * Add A Quick "Bundle" Of Multiple Products By Separating Each ID With A Comma ?add-to-cart=123,456
 

@@ -4,13 +4,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
-    * LaunchKitCore Class
+    * WPLKRegistration Class
     *
     *
     * @since 1.0.0
     */
 
-class WPLaunchKitRegistration {
+class WPLKRegistration {
 
 
 /**
@@ -42,7 +42,7 @@ class WPLaunchKitRegistration {
 
       if (is_user_logged_in() ){ 
       
-         echo _e('You are already registered.', 'lk');
+         esc_html_e('You are already registered.', 'wplk');
          
          exit;
       
@@ -109,4 +109,4 @@ class WPLaunchKitRegistration {
 
 // save
 } // instantiates class
-new WPLaunchKitRegistration;
+new WPLKRegistration;

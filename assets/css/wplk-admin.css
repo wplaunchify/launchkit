@@ -1,5 +1,13 @@
 /* WPLaunchKit Admin Styles */
 
-.form-table th {
+.toplevel_page_wplk .form-table th {
     width: 500px;
  }
+
+ .toplevel_page_wplk h2:after {
+    background: #dedede;
+    content: "";
+    display: block;
+    height: 1px;
+    margin-top: 10px;
+}

@@ -13,7 +13,9 @@ if ( ! defined( 'ABSPATH' ) ) {
      */
 
     function wplk_woo_custom_add_to_cart( $cart_item_data ) {
+        
         global $woocommerce;
+
         $woocommerce->cart->empty_cart();
 
         // Do nothing with the data and return
@@ -30,8 +32,11 @@ if ( ! defined( 'ABSPATH' ) ) {
      */
   
     function wplk_only_one_product_in_cart( $passed, $added_product_id ) {
+
        wc_empty_cart();
+       
        return $passed;
+    
     }
 
 
@@ -45,13 +50,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     // Concatenate remove link after item qty
     function wplk_filter_woocommerce_checkout_cart_item_quantity( $item_qty, $cart_item, $cart_item_key ) {
+
         $remove_link = apply_filters('woocommerce_cart_item_remove_link',
-        sprintf(
-            '<a href="#" class="remove" style="float:left; margin-right:5px;" aria-label="%s" data-product_id="%s" data-product_sku="%s" data-cart_item_key="%s">&times;</a>',
-            __( 'Remove this item', 'woocommerce' ),
-            esc_attr( $cart_item['product_id'] ),
-            esc_attr( $cart_item['data']->get_sku() ),
-            esc_attr( $cart_item_key )
+        
+            sprintf(
+                '<a href="#" class="remove" style="float:left; margin-right:5px;" aria-label="%s" data-product_id="%s" data-product_sku="%s" data-cart_item_key="%s">&times;</a>',
+                esc_html__( 'Remove this item', 'woocommerce' ),
+                esc_attr( $cart_item['product_id'] ),
+                esc_attr( $cart_item['data']->get_sku() ),
+                esc_attr( $cart_item_key )
         ),
         $cart_item_key );
 
@@ -96,7 +103,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     // php Ajax
     function wplk_product_remove() { 
+
         if ( isset( $_POST['cart_item_key'] ) ) {
+
+            // Get cart item key and sanitize
             $cart_item_key = sanitize_key( $_POST['cart_item_key'] );
             
             // Remove cart item
@@ -119,20 +129,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     add_action( 'init', 'wplk_empty_cart_action', 20 );
     function wplk_empty_cart_action() { // applies on any page where string is present ?emptycart=yes
+
       if (! is_admin() ) {
-        if ( isset( $_GET['emptycart'] ) && 'yes' === esc_html( $_GET['emptycart']  ) ) {
+        
+        // Sanitize empty cart string
+        $str = sanitize_text_field($_GET['emptycart']);
+
+        if ( isset( $str ) && 'yes' === esc_html( $str ) ) {
+
             WC()->cart->empty_cart(true);
+            
             $referer  = wp_get_referer() ? esc_url( remove_query_arg( 'emptycart' ) ) : wc_get_cart_url();
+            
             wp_safe_redirect( $referer );
+        
         }
+      
       } // end admin check  
+    
     }
 
 
 
 /**
      * Removes product from cart based on ID (see also shortcode button in class-wplk-core)
-     * example: ?remove-from-cart=1234 will remove product with ID of 1234
+     * example: ?remove-product=1234 will remove product with ID of 1234
      *
      * @since 1.0.0
      *
@@ -141,15 +162,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     add_action( 'wp_head', 'wplk_remove_product_action');
     function wplk_remove_product_action() { // applies on any page where string is present ?remove-product=1234
+
       if (! is_admin() ) {
-        if( isset($_GET['remove-product']) ){
-            
-        $product_id = esc_attr( $_GET['remove-product'] );
-        $product_cart_id = WC()->cart->generate_cart_id( $product_id );
-        $cart_item_key = WC()->cart->find_product_in_cart( $product_cart_id );
-        if ( $cart_item_key ) WC()->cart->remove_cart_item( $cart_item_key );
-        }
+        
+            // Sanitize remove product string
+            $str = sanitize_text_field($_GET['remove-product']);
+                
+            $product_id = esc_attr( $str );
+
+            $product_cart_id = WC()->cart->generate_cart_id( $product_id );
+
+            $cart_item_key = WC()->cart->find_product_in_cart( $product_cart_id );
+
+            if ( $cart_item_key ) WC()->cart->remove_cart_item( $cart_item_key );
+        
       } // end admin check  
+
     }
 
 /**
@@ -163,16 +191,29 @@ if ( ! defined( 'ABSPATH' ) ) {
     
     add_action('init', 'wplk_get_custom_coupon_code_to_session');
     function wplk_get_custom_coupon_code_to_session(){
-        if( isset($_GET['wplkcoupon']) ){
-            // Ensure that customer session is started
-            if( !WC()->session->has_session() )
-                WC()->session->set_customer_session_cookie(true);
 
-            // Check and register coupon code in a custom session variable
-            $coupon_code = WC()->session->get('wplkcoupon');
-            if(empty($coupon_code)){
-                $coupon_code = esc_attr( $_GET['wplkcoupon'] );
-                WC()->session->set( 'wplkcoupon', $coupon_code ); // Set the coupon code in session
+        if (! is_admin() ) {
+
+            if( isset( $_GET['wplkcoupon'] ) ){
+
+                // Sanitize coupon code string
+                $str = sanitize_text_field($_GET['wplkcoupon']);
+                
+                // Ensure that customer session is started
+                if( !WC()->session->has_session() )
+
+                    WC()->session->set_customer_session_cookie(true);
+
+                // Check, sanitize and register coupon code in a custom session variable
+                $coupon_code = sanitize_text_field( WC()->session->get('wplkcoupon'));
+
+                if(empty($coupon_code)){
+                    
+                    $coupon_code = esc_attr( $str );
+                    
+                    WC()->session->set( 'wplkcoupon', $coupon_code ); // Set the coupon code in session
+                
+                }
             }
         }
     }
@@ -180,15 +221,22 @@ if ( ! defined( 'ABSPATH' ) ) {
     add_action( 'woocommerce_before_checkout_form', 'wplk_add_discout_to_checkout', 10, 0 );
     function wplk_add_discout_to_checkout( ) {
 
-      // not on admin
-      if ( !is_admin() ) {	
-        // Set coupon code
-        $coupon_code = WC()->session->get('wplkcoupon');
-        if ( ! empty( $coupon_code ) && ! WC()->cart->has_discount( $coupon_code ) ){
-            WC()->cart->add_discount( $coupon_code ); // apply the coupon discount
-            WC()->session->__unset('wplkcoupon'); // remove coupon code from session
-        }
-      } 
+        // not on admin
+        if ( !is_admin() ) {	
+
+            // Set coupon code and sanitize
+            $coupon_code = sanitize_text_field( WC()->session->get('wplkcoupon') );
+            
+            if ( ! empty( $coupon_code ) && ! WC()->cart->has_discount( $coupon_code ) ){
+
+                WC()->cart->add_discount( $coupon_code ); // apply the coupon discount
+                
+                WC()->session->__unset('wplkcoupon'); // remove coupon code from session
+            
+            }
+      
+        } 
+    
     }
 
 
@@ -204,49 +252,76 @@ if ( ! defined( 'ABSPATH' ) ) {
     // stackoverflow.com/questions/42570982/adding-multiple-items-to-woocommerce-cart-at-once
     function wplk_add_multiple_simple_products_to_cart() {
 
-    // make sure WC is installed, and add-to-cart query arg exists, and contains at least one comma.
-    if ( ! class_exists( 'WC_Form_Handler' ) || empty( $_REQUEST['add-to-cart'] ) || false === strpos( $_REQUEST['add-to-cart'], ',' ) ) {
-        return;
-    }
+        if (! is_admin() ) {
+        
+            if (isset($_REQUEST['add-to-cart']) ){
 
-    // remove WooCommerce's hook, as it's useless (doesn't handle multiple products).
-    remove_action( 'wp_loaded', array( 'WC_Form_Handler', 'add_to_cart_action' ), 20 );
+                // Sanitize empty cart string
+                $str = sanitize_text_field($_REQUEST['add-to-cart']);
 
-    $product_ids = explode( ',', $_REQUEST['add-to-cart'] );
-    $count       = count( $product_ids );
-    $number      = 0;
 
-    foreach ( $product_ids as $product_id ) {
-        if ( ++$number === $count ) {
-            // Ok, final item, let's send it back to woocommerce's add_to_cart_action method for handling.
-            $_REQUEST['add-to-cart'] = $product_id;
+                // make sure WC is installed, and add-to-cart query arg exists, and contains at least one comma.
+                if ( ! class_exists( 'WC_Form_Handler' ) || empty( $str ) || false === strpos( $str, ',' ) ) {
+                    return;
+                }
 
-            return WC_Form_Handler::add_to_cart_action();
-        }
+                // remove WooCommerce's hook, as it's useless (doesn't handle multiple products).
+                remove_action( 'wp_loaded', array( 'WC_Form_Handler', 'add_to_cart_action' ), 20 );
 
-        $product_id        = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $product_id ) );
-        $was_added_to_cart = false;
-        $adding_to_cart    = wc_get_product( $product_id );
+                $product_ids = explode( ',', $str );
 
-        if ( ! $adding_to_cart ) {
-            continue;
-        }
+                $count       = count( $product_ids );
+                
+                $number      = 0;
 
-        $add_to_cart_handler = apply_filters( 'woocommerce_add_to_cart_handler', $adding_to_cart->product_type, $adding_to_cart );
+                foreach ( $product_ids as $product_id ) {
 
-      // works only with simple products add_to_cart_handler
-        if ( 'simple' !== $add_to_cart_handler ) {
-            continue;
-        }
+                    if ( ++$number === $count ) {
 
-        // sets default quantity of all products to 1
-        $quantity          = empty( $_REQUEST['quantity'] ) ? 1 : wc_stock_amount( $_REQUEST['quantity'] );
-        $passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $quantity );
+                        // Ok, final item, let's send it back to woocommerce's add_to_cart_action method for handling
+                        // note: this does not require sanitizing as it internal from our function
+                        $_REQUEST['add-to-cart'] = $product_id;
 
-        if ( $passed_validation && false !== WC()->cart->add_to_cart( $product_id, $quantity ) ) {
-            wc_add_to_cart_message( array( $product_id => $quantity ), true );
-        }
-      }
+                        return WC_Form_Handler::add_to_cart_action();
+                    }
+
+                    $product_id        = apply_filters( 'woocommerce_add_to_cart_product_id', absint( $product_id ) );
+
+                    $was_added_to_cart = false;
+                    
+                    $adding_to_cart    = wc_get_product( $product_id );
+
+                    if ( ! $adding_to_cart ) {
+
+                        continue;
+                    
+                    }
+
+                    $add_to_cart_handler = apply_filters( 'woocommerce_add_to_cart_handler', $adding_to_cart->product_type, $adding_to_cart );
+
+                    // works only with simple products add_to_cart_handler
+                    if ( 'simple' !== $add_to_cart_handler ) {
+
+                        continue;
+                    
+                    }
+
+                    // Sanitize and sets default quantity of all products to 1
+                    $qty = sanitize_text_field( $_REQUEST['quantity'] ); 
+
+                    $quantity          = empty( $qty ) ? 1 : wc_stock_amount( $qty );
+                    
+                    $passed_validation = apply_filters( 'woocommerce_add_to_cart_validation', true, $product_id, $quantity );
+
+                    if ( $passed_validation && false !== WC()->cart->add_to_cart( $product_id, $quantity ) ) {
+
+                        wc_add_to_cart_message( array( $product_id => $quantity ), true );
+                    
+                    }
+
+                }
+            }
+        }          
     }
 
      // fire before the WC_Form_Handler::add_to_cart_action callback.
@@ -278,24 +353,35 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     add_filter( 'woocommerce_add_cart_item_data', 'wplk_catch_and_save_submited_donation', 10, 2 );
     function wplk_catch_and_save_submited_donation( $cart_item_data, $product_id ){
-        if( isset($_REQUEST['donation']) ) {
-            // Get the WC_Product Object
-            $product = wc_get_product( $product_id );
 
-            // Get and set the product active price
-            $cart_item_data['active_price'] = (float) $product->get_price();
+        if (! is_admin() ) {
+        
+            if( isset($_REQUEST['donation']) ) {
+     
+                // Set donation and sanitize
+                $str = sanitize_text_field($_REQUEST['donation']);
 
-            // Get the donation amount and set it
-            $cart_item_data['donation'] = (float) esc_attr( $_REQUEST['donation'] );
-            $cart_item_data['unique_key'] = md5( microtime().rand() ); // Make each item unique
-        }
-        return $cart_item_data;
+                // Get the WC_Product Object
+                $product = wc_get_product( $product_id );
+
+                // Get and set the product active price
+                $cart_item_data['active_price'] = (float) $product->get_price();
+
+                // Get the donation amount and set it
+                $cart_item_data['donation'] = (float) esc_attr( $str );
+
+                $cart_item_data['unique_key'] = md5( microtime().rand() ); // Make each item unique
+            }
+
+            return $cart_item_data;
+        }    
     }
 
 
 
     add_action( 'woocommerce_before_calculate_totals', 'wplk_add_donation_to_item_price', 10, 1);
     function wplk_add_donation_to_item_price( $cart ) {
+
         if ( is_admin() && ! defined( 'DOING_AJAX' ) )
             return;
 
@@ -305,14 +391,22 @@ if ( ! defined( 'ABSPATH' ) ) {
 
         // Loop through cart items
         foreach ( $cart->get_cart() as $item ) {
+        
             // Use either the donation, if set and at least 1, or the product price (set it to minimum required)
             if ( isset( $item['donation']) && ( $item['donation'] >= 1 ) && isset( $item['active_price']) ) {
+        
                 $item['data']->set_price( $item['donation'] ); // if donation is set, price equals donation
+        
             } else {
+        
                 $item = false;
+        
                 if(isset($item['active_price'])){ // conditional check that active_price is set and not a null value
+        
                 $item['data']->set_price( $item['active_price'] ); // otherwise, price equals active price
+        
                 }
+        
             }
 
         }
@@ -323,7 +417,7 @@ if ( ! defined( 'ABSPATH' ) ) {
      * Registration Redirection
      *
      * Redirect to my account after registration if using registration shortcode
-     * @since 4.3.4
+     * @since 1.0.0
      *
      * @return void
      */
@@ -332,8 +426,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 
     function wplk_register_redirect() {
         global $post;
+
          if ( has_shortcode( $post->post_content, 'wplk-registration' )  && is_user_logged_in() ) {
+
                 wp_redirect( get_permalink( wc_get_page_id( 'myaccount' ) ) );
+
                 exit;
         }
+
     }
