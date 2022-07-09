@@ -64,7 +64,7 @@ Upload and activate the plugin, then go to the LaunchKit tab in the admin dashbo
 
 = Where can I find LaunchKit documentation and more info? =
 
-You can learn more about LaunchKit on our website at [https://wplaunchify.com/wplaunchkit](https://wplaunchify.com/?utm_source=wp_repo_wplaunchkit&utm_medium=readme&utm_content=more_documentation)
+You can learn more about LaunchKit on our website at [https://wplaunchify.com/launchkit](https://wplaunchify.com/launchkit?utm_source=wp_repo_launchkit&utm_medium=readme&utm_content=more_documentation)
 
 == Changelog ==
 

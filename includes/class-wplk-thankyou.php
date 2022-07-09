@@ -44,8 +44,8 @@ class WPLKThankYou {
 			isset( $section['type'] ) && 'sectionend' === $section['type'] ) {
 
 				$updated_settings[] = array(
-					'title'    => __( 'WPLaunchKit - Thank You Page', 'woocommerce' ),
-					'desc'     => __( 'Add a default, fallback thank you page to redirect to after the checkout process is complete.', 'woocommerce' ),
+					'title'    => esc_html__( 'LaunchKit - Thank You Page', 'wplk' ),
+					'desc'     => esc_html__( 'Add a thank you page to redirect to after the checkout process is complete.', 'wplk' ),
 					'id'       => 'wplk_thankyou_page_id',
 					'type'     => 'single_select_page',
 					'default'  => '',

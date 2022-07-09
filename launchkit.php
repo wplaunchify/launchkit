@@ -3,7 +3,7 @@
  * Plugin Name:	LaunchKit
  * Plugin URI:	https://wplaunchify.com
  * Description:	Ready To Use WooCommerce Site Solutions For Online Business
- * Version:		1.0
+ * Version:		1.0.0
  * Author:		1WD LLC
  * License:     GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -127,6 +127,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 		// Check if LaunchFlows is installed and activated before adding thank you redirect
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+		
 		if ( ! is_plugin_active( 'launchflows/launchflows.php' ) ) {
 
 			require_once( 'includes/class-wplk-thankyou.php' ); // custom thank you pages per WC product
@@ -178,21 +179,26 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 		$screen = get_current_screen();
 
 		if ( isset( $screen->parent_file ) && 'plugins.php' === $screen->parent_file && 'update' === $screen->id ) {
+
 			return;
+		
 		}
 
 		$plugin = 'woocommerce/woocommerce.php';
 
 		if ( _is_woocommerce_installed() ) {
+		
 			if ( ! current_user_can( 'activate_plugins' ) ) {
+		
 				return;
+		
 			}
 
 			$activation_url = wp_nonce_url( 'plugins.php?action=activate&amp;plugin=' . $plugin . '&amp;plugin_status=all&amp;paged=1&amp;s', 'activate-plugin_' . $plugin );
 
-			$message = '<p>' . __( 'The <strong>LaunchKit</strong> plugin requires the <strong>WooCommerce</strong> plugin.', 'wplk' ) . '</p>';
+			$message = '<p>' . esc_html__( 'LaunchKit requires WooCommerce to be installed and activated', 'wplk' ) . '</p>';
 	
-			$message .= '<p>' . sprintf( '<a href="%s" class="button-primary">%s</a>', $activation_url, __( 'Activate WooCommerce Now', 'wplk' ) ) . '</p>';
+			$message .= '<p>' . sprintf( '<a href="%s" class="button-primary">%s</a>', $activation_url, esc_html__( 'Activate WooCommerce Now', 'wplk' ) ) . '</p>';
 	
 		} else {
 	
@@ -203,12 +209,14 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 			$install_url = wp_nonce_url( self_admin_url( 'update.php?action=install-plugin&plugin=woocommerce' ), 'install-plugin_woocommerce' );
 
-			$message = '<p>' . __( 'The <strong>LaunchKit</strong> plugin requires the <strong>WooCommerce</strong> plugin.', 'wplk' ) . '</p>';
+			$message = '<p>' . esc_html__( 'LaunchKit requires WooCommerce to be installed and activated', 'wplk' ) . '</p>';
 	
-			$message .= '<p>' . sprintf( '<a href="%s" class="button-primary">%s</a>', $install_url, __( 'Install WooCommerce Now', 'wplk' ) ) . '</p>';
+			$message .= '<p>' . sprintf( '<a href="%s" class="button-primary">%s</a>', esc_url( $install_url) , esc_html__( 'Install WooCommerce Now', 'wplk' ) ) . '</p>';
 		}
 
-		echo '<div class="error LaunchKit"><p>' . $message . '</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
+		// All content is now santized and escaped. Output to screen.
+		echo'<div class="error LaunchKit"><p>' . wp_kses_post( $message ) . '</p><button type="button" class="notice-dismiss"><span class="screen-reader-text">' . esc_html__('Dismiss this notice','wplk') .'</span></button></div>';
+
 	}
 
 
@@ -344,7 +352,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 // Checkout Options
 		add_settings_section( 
 			'wplk_options_section_checkout', 
-			__( 'Checkout Options<hr>', 'wplk' ), 
+			esc_html__( 'Checkout Options', 'wplk' ), 
 			array($this, 'wplk_settings_section'), 
 			'wplk_options_page'
 		);
@@ -352,7 +360,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 					add_settings_field( // Change Default Checkout Button Text
 						'wplk_text_field_1', 
-						__( 'Change Checkout Button Text', 'wplk' ), 
+						esc_html__( 'Change Checkout Button Text', 'wplk' ), 
 						array($this, 'wplk_text_field_1_render'), 
 						'wplk_options_page', 
 						'wplk_options_section_checkout' 
@@ -360,7 +368,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 					add_settings_field( // Force WooCommerce Default Layout Into One Column
 						'wplk_checkbox_field_11', 
-						__( 'Change Checkout Layout Into One Column', 'wplk' ), 
+						esc_html__( 'Change Checkout Layout Into One Column', 'wplk' ), 
 						array($this, 'wplk_checkbox_field_11_render'), 
 						'wplk_options_page', 
 						'wplk_options_section_checkout' 
@@ -368,7 +376,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 					add_settings_field( // Show Checkout Even If Empty Cart
 						'wplk_checkbox_field_15', 
-						__( 'Display Checkout Even When No Products In Cart', 'wplk' ), 
+						esc_html__( 'Display Checkout Even When No Products In Cart', 'wplk' ), 
 						array($this, 'wplk_checkbox_field_15_render'), 
 						'wplk_options_page', 
 						'wplk_options_section_checkout' 
@@ -384,7 +392,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 // Product Options
 		add_settings_section( 
 			'wplk_options_section_product', 
-			__( 'Product Options<hr>', 'wplk' ), 
+			esc_html__( 'Product Options', 'wplk' ), 
 			array($this, 'wplk_settings_section1'), 
 			'wplk_options_page'
 		);
@@ -392,7 +400,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 					add_settings_field( // Redirect To Checkout After Adding Any Product To Cart
 						'wplk_checkbox_field_12', 
-						__( 'Redirect To Checkout After Adding Any Product To Cart', 'wplk' ), 
+						esc_html__( 'Redirect To Checkout After Adding Any Product To Cart', 'wplk' ), 
 						array($this, 'wplk_checkbox_field_12_render'), 
 						'wplk_options_page', 
 						'wplk_options_section_product' 
@@ -400,7 +408,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 					add_settings_field( // Hide View Cart Notice After Adding Any Product To Cart
 						'wplk_checkbox_field_6', 
-						__( 'Hide "View Cart" Notice After Products Added To Cart', 'wplk' ), 
+						esc_html__( 'Hide "View Cart" Notice After Products Added To Cart', 'wplk' ), 
 						array($this, 'wplk_checkbox_field_6_render'), 
 						'wplk_options_page', 
 						'wplk_options_section_product' 
@@ -408,7 +416,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 					add_settings_field( // Allow Only One Product In Cart At A Time
 						'wplk_checkbox_field_1', 
-						__( 'Allow Only One Product In Checkout At A Time', 'lk' ), 
+						esc_html__( 'Allow Only One Product In Checkout At A Time', 'lk' ), 
 						array($this, 'wplk_checkbox_field_1_render'), 
 						'wplk_options_page', 
 						'wplk_options_section_product' 
@@ -417,7 +425,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 					add_settings_field( // Add Product Removal Links To Products In Checkout
 						'wplk_checkbox_field_16', 
-						__( 'Add Removal Link To Any Products In Checkout', 'wplk' ), 
+						esc_html__( 'Add Removal Link To Any Products In Checkout', 'wplk' ), 
 						array($this, 'wplk_checkbox_field_16_render'), 
 						'wplk_options_page', 
 						'wplk_options_section_product' 
@@ -426,7 +434,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 // Registration Options		
 		add_settings_section( 
 			'wplk_options_section_registration', 
-			__( 'Registration Options<hr>', 'wplk' ), 
+			esc_html__( 'Registration Options', 'wplk' ), 
 			array($this, 'wplk_settings_section3'), 
 			'wplk_options_page'
 		);
@@ -434,7 +442,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 					add_settings_field( // Use Email for Username When Registrering
 						'wplk_checkbox_field_5', 
-						__( 'Use Email For Username With WooCommerce User Registration', 'wplk' ), 
+						esc_html__( 'Use Email For Username With WooCommerce User Registration', 'wplk' ), 
 						array($this, 'wplk_checkbox_field_5_render'), 
 						'wplk_options_page', 
 						'wplk_options_section_registration' 
@@ -442,7 +450,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 					add_settings_field( // Add First And Last Name To WC Registration Form
 						'wplk_checkbox_field_8', 
-						__( 'Use First & Last Names With WooCommerce User Registration', 'wplk' ), 
+						esc_html__( 'Use First & Last Names With WooCommerce User Registration', 'wplk' ), 
 						array($this, 'wplk_checkbox_field_8_render'), 
 						'wplk_options_page', 
 						'wplk_options_section_registration' 
@@ -451,7 +459,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 // Other Options
 		add_settings_section( 
 			'wplk_options_section_other', 
-			__( 'Other Options<hr>', 'wplk' ), 
+			esc_html__( 'Other Options', 'wplk' ), 
 			array($this, 'wplk_settings_section2'), 
 			'wplk_options_page'
 		);
@@ -459,7 +467,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 					add_settings_field( // Disable Kadence Theme Field Colors In WC Checkout
 						'wplk_checkbox_field_14', 
-						__( 'Disable Kadence Theme Checkout Field Colors', 'wplk' ), 
+						esc_html__( 'Disable Kadence Theme Checkout Field Colors', 'wplk' ), 
 						array($this, 'wplk_checkbox_field_14_render'), 
 						'wplk_options_page', 
 						'wplk_options_section_other' 
@@ -467,7 +475,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 					add_settings_field( // Link To WooCommerce Thank You Page Settings
 						'wplk_setup_1', 
-						__( 'Set The LaunchKit Global Thank You Page', 'wplk' ), 
+						esc_html__( 'Set The LaunchKit Global Thank You Page', 'wplk' ), 
 						array($this, 'wplk_setup_1_render'), 
 						'wplk_options_page', 
 						'wplk_options_section_other' 
@@ -556,33 +564,16 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 		$options = get_option( 'wplk_settings' );
 		?>
-		<input type='text' name='wplk_settings[wplk_text_field_1]' value='<?php echo $options['wplk_text_field_1']; ?>'>
+		<input type='text' name='wplk_settings[wplk_text_field_1]' value='<?php esc_html_e( $options['wplk_text_field_1'] );?>'>
 		<?php
 
 	}
 
-	public function wplk_text_field_2_render(  ) {  // Change Checkout Button Text (Global) When Cart Value Is Zero
-
-		$options = get_option( 'wplk_settings' );
-		?>
-		<input type='text' name='wplk_settings[wplk_text_field_2]' value='<?php echo $options['wplk_text_field_2']; ?>'>
-		<?php
-
-	}
-
-	public function wplk_text_field_3_render(  ) {  // Change Checkout Button Text (Global) When Cart Value Is Zero
-
-		$options = get_option( 'wplk_settings' );
-		?>
-		<input type='text' name='wplk_settings[wplk_text_field_3]' value='<?php echo $options['wplk_text_field_3']; ?>'>
-		<?php
-
-	}
 
 	public function wplk_text_field_20_render(  ) {  // Set Default Width in px for LaunchKit Container Template
 		$options = get_option( 'wplk_settings' );
 		?>
-		<input type='text' name='wplk_settings[wplk_text_field_20]' value='<?php echo $options['wplk_text_field_20']; ?>'>
+		<input type='text' name='wplk_settings[wplk_text_field_20]' value='<?php esc_html_e( $options['wplk_text_field_20'] ); ?>'>
 		<?php
 
 	}
@@ -648,8 +639,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 		include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
 		if (  is_plugin_active( 'launchflows/launchflows.php' ) ) {
 
-			echo __( 'LaunchKit is disabed when you have LaunchFlows enabled.', 'wplk' );
-	
+			esc_html_e( 'LaunchKit is disabed when you have LaunchFlows enabled.', 'wplk' );
+
 		}
 	
 	}
@@ -674,7 +665,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 		} else {
 
-			echo __('LaunchKit is disabled when LaunchFlows is enabled.', 'wplk'); 
+			esc_html_e('LaunchKit is disabled when LaunchFlows is enabled.', 'wplk'); 
+
 		}		
 				?>
 

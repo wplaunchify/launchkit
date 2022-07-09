@@ -131,19 +131,23 @@ if ( ! defined( 'ABSPATH' ) ) {
     function wplk_empty_cart_action() { // applies on any page where string is present ?emptycart=yes
 
       if (! is_admin() ) {
-        
-        // Sanitize empty cart string
-        $str = sanitize_text_field($_GET['emptycart']);
 
-        if ( isset( $str ) && 'yes' === esc_html( $str ) ) {
-
-            WC()->cart->empty_cart(true);
-            
-            $referer  = wp_get_referer() ? esc_url( remove_query_arg( 'emptycart' ) ) : wc_get_cart_url();
-            
-            wp_safe_redirect( $referer );
+        if ( isset($_GET['emptycart'] ) ) {
         
-        }
+                // Sanitize empty cart string
+                $str = sanitize_text_field($_GET['emptycart']);
+
+                if ( isset( $str ) && 'yes' === esc_html( $str ) ) {
+
+                    WC()->cart->empty_cart(true);
+                    
+                    $referer  = wp_get_referer() ? esc_url( remove_query_arg( 'emptycart' ) ) : wc_get_cart_url();
+                    
+                    wp_safe_redirect( $referer );
+                
+                }
+
+        }        
       
       } // end admin check  
     
@@ -164,6 +168,8 @@ if ( ! defined( 'ABSPATH' ) ) {
     function wplk_remove_product_action() { // applies on any page where string is present ?remove-product=1234
 
       if (! is_admin() ) {
+
+        if( isset( $_GET['remove-product'] ) ){
         
             // Sanitize remove product string
             $str = sanitize_text_field($_GET['remove-product']);
@@ -176,6 +182,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
             if ( $cart_item_key ) WC()->cart->remove_cart_item( $cart_item_key );
         
+        }
+
       } // end admin check  
 
     }
@@ -224,17 +232,21 @@ if ( ! defined( 'ABSPATH' ) ) {
         // not on admin
         if ( !is_admin() ) {	
 
-            // Set coupon code and sanitize
-            $coupon_code = sanitize_text_field( WC()->session->get('wplkcoupon') );
-            
-            if ( ! empty( $coupon_code ) && ! WC()->cart->has_discount( $coupon_code ) ){
-
-                WC()->cart->add_discount( $coupon_code ); // apply the coupon discount
+            if( isset( $_GET['wplkcoupon'] ) ){
+    
+                // Set coupon code and sanitize
+                $coupon_code = sanitize_text_field( WC()->session->get('wplkcoupon') );
                 
-                WC()->session->__unset('wplkcoupon'); // remove coupon code from session
-            
+                if ( ! empty( $coupon_code ) && ! WC()->cart->has_discount( $coupon_code ) ){
+
+                    WC()->cart->add_discount( $coupon_code ); // apply the coupon discount
+                    
+                    WC()->session->__unset('wplkcoupon'); // remove coupon code from session
+                
+                }
+    
             }
-      
+              
         } 
     
     }
