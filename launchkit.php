@@ -3,7 +3,7 @@
  * Plugin Name:	LaunchKit
  * Plugin URI:	https://wplaunchify.com
  * Description:	Ready To Use WooCommerce Site Solutions For Online Business
- * Version:		1.0.0
+ * Version:		1.0.1
  * Author:		1WD LLC
  * License:     GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html

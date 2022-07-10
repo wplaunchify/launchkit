@@ -447,3 +447,60 @@ if ( ! defined( 'ABSPATH' ) ) {
         }
 
     }
+
+
+
+/**
+     * Custom Thank You Page Redirection
+     *
+     * Redirects Any Product With One Of Three Reserved Categories To Custom Thank You Pages
+     * 
+     * Setup three product categories and pages with (wplk1, wplk2, wplk3) as the slugs (Names can be anything)
+     *
+     * @since 1.0.1
+     *
+     * @return void
+     */
+
+    add_action( 'template_redirect', 'wplk_custom_cat_redirect' );
+    function wplk_custom_cat_redirect() {
+
+        // Only on "order received" page
+        if( is_wc_endpoint_url('order-received') ) {
+            global $wp;
+            $order = wc_get_order( absint($wp->query_vars['order-received']) ); // Get the Order Object
+            $category_found = false;
+
+            // Loop through order items
+            foreach( $order->get_items() as $item ){
+                if( has_term( 'wplk1', 'product_cat', $item->get_product_id()  ) ) {
+                    $category_found = wplk1;
+                    break;
+                }
+                if( has_term( 'wplk2', 'product_cat', $item->get_product_id()  ) ) {
+                    $category_found = wplk2;
+                    break;
+                }
+                if( has_term( 'wplk3', 'product_cat', $item->get_product_id()  ) ) {
+                    $category_found = wplk3;
+                    break;
+                }
+            }
+
+            if( $category_found === wplk1 ) {
+                // Redirect For wplk1
+                wp_redirect( get_site_url(null, '/wplk1/', 'https') );
+                exit(); // Always exit
+            }
+            if( $category_found === wplk2 ) {
+                //  Redirect For wplk2
+                wp_redirect( get_site_url(null, '/wplk2/', 'https') );
+                exit(); // Always exit
+            }
+                if( $category_found === wplk3 ) {
+                // Redirect For wplk3
+                wp_redirect( get_site_url(null, '/wplk3/', 'https') );
+                exit(); // Always exit
+            }
+        }
+    }

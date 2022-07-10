@@ -4,7 +4,7 @@ Contributors: 1WD LLC
 Tags: woocommerce, sales funnels, checkout, launchflows, wplaunchkit
 Requires at least: 5.0
 Tested up to: 6.0
-Stable Tag: 1.0.0
+Stable Tag: 1.0.1
 Requires PHP: 7.3
 WC requires at least: 6.0
 WC tested up to: 6.6
@@ -46,6 +46,7 @@ Ready To Use WooCommerce Site Solutions For Online Business
 * Instantly Register, Log-In & Redirect New User From Any Page with &#91;wplk-registration&#93; shortcode
 * Disable Kadence Theme Checkout Field Colors
 * Add A Global Thank You Page To WooCommerce
+* Adds Three Custom Redirection URLs after products purchased with matching categories (wplk1, wplk2, wplk3)
 
 = Custom Functions =
 
@@ -68,5 +69,8 @@ You can learn more about LaunchKit on our website at [https://wplaunchify.com/la
 
 == Changelog ==
 
-07-04-2022 	- version 1.0
+07-10-2022  - version 1.0.1
+* Feature   - added custom thank you redirection for three pages with matching product categories (wplk1, wplk3, wplk3)
+
+07-04-2022 	- version 1.0.1
 * First Release!
