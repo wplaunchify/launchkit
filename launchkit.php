@@ -772,6 +772,9 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 				    padding-left: 0;
 				}
 
+				.theme-blocksy form.checkout.woocommerce-checkout {
+				    grid-template-columns: repeat(1,1fr);
+				}
 				</style>
 	<?php
 	 			}

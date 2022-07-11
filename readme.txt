@@ -71,6 +71,7 @@ You can learn more about LaunchKit on our website at [https://wplaunchify.com/la
 
 07-10-2022  - version 1.0.1
 * Feature   - added custom thank you redirection for three pages with matching product categories (wplk1, wplk3, wplk3)
+* Tweak     - added custom css for Blocky theme for one column wc checkout
 
 07-04-2022 	- version 1.0.1
 * First Release!
