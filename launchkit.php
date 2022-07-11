@@ -763,8 +763,8 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 			  	<style>
 			  	#customer_details, #order_review {
-			    width: 100%;
-			    float: none;
+			    	width: 100%;
+			   		float: none;
 				}
 
 				form.checkout #order_review_heading, 
