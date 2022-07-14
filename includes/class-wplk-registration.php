@@ -39,14 +39,6 @@ class WPLKRegistration {
    function wplk_registration($redirection_url) {
       
       if ( ! is_admin() ) {
-
-            if (is_user_logged_in() ){ 
-            
-               esc_html_e('You are already registered.', 'wplk');
-               
-               exit;
-            
-            }
              
             ob_start();
 
